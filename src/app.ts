@@ -3,6 +3,7 @@ import  express  from "express";
 import {appDataSource }from "./configuration/connection";
 import newRouter from "./Routes/news.routes";
 import cors from 'cors'
+import commentRouter from "./Routes/comments.routes";
 
 
 // const corsOptions = {
@@ -19,10 +20,11 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 
 app.use("/",newRouter)
+app.use("/",commentRouter)
 
 appDataSource.initialize()
 .then(()=>console.log("the connection has been established"))
-.catch(()=>console.log("there was a problem in the connection"))
+.catch((err)=>console.log("there was a problem in the connection" + err))
 
 
 

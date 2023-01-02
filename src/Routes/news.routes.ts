@@ -71,6 +71,18 @@ newRouter.get('/news',async(req:Request,res:Response)=>{
 
 })
 
+newRouter.post('/like',async(req:Request,res:Response)=>{
+
+    console.log(req.body)
+    try {
+
+    }
+    catch(e){
+        console.log("there was an error")
+    }
+
+})
+
 
 
 

@@ -1,4 +1,4 @@
-import  { Column, Entity,PrimaryGeneratedColumn,ManyToOne, JoinColumn} from 'typeorm'
+import  { Column, Entity,PrimaryGeneratedColumn,ManyToOne, JoinColumn, JoinTable} from 'typeorm'
 import { News } from './News';
 
 @Entity() 
@@ -6,11 +6,11 @@ export class Likes   {
     @PrimaryGeneratedColumn()
     id!:number;
 
-    @Column()
-    news_id!: number;
+  
 
-    @ManyToOne(()=> News,(news)=>news.likes)
+    @ManyToOne(()=> News,(news)=>news.likes ,{cascade:true})
     news!:News
+   
 
 
    
