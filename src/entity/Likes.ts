@@ -6,7 +6,8 @@ export class Likes   {
     @PrimaryGeneratedColumn()
     id!:number;
 
-  
+  @Column()
+  newsId!:number;
 
     @ManyToOne(()=> News,(news)=>news.likes ,{cascade:true})
     news!:News

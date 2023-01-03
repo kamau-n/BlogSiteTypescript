@@ -29,5 +29,35 @@ commentRouter.post("/news/comment",async(req:Request,res:Response)=>{
 
     }
 })
+commentRouter.post("/news/comments", async (req:Request,res:Response)=>{
+    console.log(req.body)
+
+    const commentsRepository=  appDataSource.getRepository(Comments)
+    try {
+   const comments =await commentsRepository.find(
+        {
+            relations:{
+                news:true
+            },
+            where :{
+                news:{
+                    id:req.body.id
+                }
+            }
+        }
+    )
+
+    res.send(comments)
+
+    }
+    catch(err) {
+        res.send(err)
+    }
+
+
+
+
+
+})
 
 export default commentRouter;
