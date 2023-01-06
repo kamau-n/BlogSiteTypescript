@@ -1,4 +1,4 @@
-import  { BaseEntity, Column, Entity,PrimaryGeneratedColumn,OneToMany} from 'typeorm'
+import  { BaseEntity, Column, Entity,PrimaryGeneratedColumn,OneToMany, CreateDateColumn} from 'typeorm'
 import { Comments } from './Comment';
 import { Likes } from './Likes';
 
@@ -12,6 +12,10 @@ export class News   {
 
     @Column()
     content!:string;
+
+    @CreateDateColumn({type:"datetime"})
+    createdAt!:Date;
+   
 
 
     @OneToMany(()=>Likes,(likes)=>likes.news )

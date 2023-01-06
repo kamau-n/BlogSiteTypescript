@@ -1,5 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { News } from "./News";
+import { User } from "./User";
+import { Col } from "sequelize/types/utils";
 
   
 
@@ -18,10 +20,19 @@ export class Comments{
     @Column()
      newsId!:number;
 
+     @Column()
+     userId!:number;
+
+ 
+    
+
 
     @ManyToOne(()=>News , (news)=>news.comments,{onDelete:"CASCADE"})
     news!:News
 
+
+    @ManyToOne(()=> User , (user)=>user.comments,{onDelete:'CASCADE'})
+    user!:User
    
    
 

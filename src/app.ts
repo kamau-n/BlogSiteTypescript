@@ -4,6 +4,7 @@ import {appDataSource }from "./configuration/connection";
 import newRouter from "./Routes/news.routes";
 import cors from 'cors'
 import commentRouter from "./Routes/comments.routes";
+import userRouter from "./Routes/user.routes";
 
 
 // const corsOptions = {
@@ -21,6 +22,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.use("/",newRouter)
 app.use("/",commentRouter)
+app.use("/",userRouter)
 
 appDataSource.initialize()
 .then(()=>console.log("the connection has been established"))
