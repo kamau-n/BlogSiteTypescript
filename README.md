@@ -1,1 +1,6 @@
-This is a news website developed using TypeScript and express 
+# Hello
+
+## About this Project
+
+ This is a typescript project
+ 
