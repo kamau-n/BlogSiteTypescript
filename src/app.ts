@@ -2,7 +2,7 @@ import bodyParser from "body-parser";
 import  express  from "express";
 import {appDataSource }from "./configuration/connection";
 import newRouter from "./Routes/news.routes";
-import cors from 'cors'
+import cors from "cors"
 import commentRouter from "./Routes/comments.routes";
 import userRouter from "./Routes/user.routes";
 

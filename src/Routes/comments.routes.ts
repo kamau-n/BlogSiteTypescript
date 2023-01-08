@@ -37,7 +37,8 @@ commentRouter.post("/news/comments", async (req:Request,res:Response)=>{
    const comments =await commentsRepository.find(
         {
             relations:{
-                news:true
+                news:true,
+                user:true
             },
             where :{
                 news:{

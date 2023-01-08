@@ -34,6 +34,7 @@ if(!exists){
     .execute()
 
 
+
     console.log(newUser)
     res.status(200).json({msg:"user has been created successfully"})
 }
@@ -44,6 +45,20 @@ else {
 
 
     
+
+})
+
+userRouter.post("/login",async(req:Request,res:Response)=>{
+    const exists=await userRepository.findOneBy({
+        email:req.body.email
+
+    })
+    if(exists){
+        res.send(exists)
+    }
+    else {
+        res.send("Does not exist")
+    }
 
 })
 
