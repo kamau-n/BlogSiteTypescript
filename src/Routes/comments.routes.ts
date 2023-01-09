@@ -1,11 +1,41 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { appDataSource } from "../configuration/connection";
 import { Comments } from "../entity/Comment";
+import jwt, { Secret } from "jsonwebtoken"
+;
+import { getCookie, setCookie } from 'typescript-cookie'
+
+
+
+const secret:Secret="i have a secret";
+const accessToken:string=''
+
+const verifyJwt =(req:Request,res:Response,next:NextFunction)=>{
+
+    console.log("middleware has been accessed")
+    //console.log(getCookie('acessToken'));
+     let token =req.headers.authorization?.split(' ')[1];
+     next()
+//    const token =res.cookie.accessToken || res.cookie.refreshToken;
+    // if(token) {
+    //  const decoded=   jwt.verify(token,secret)
+    //  next()
+        
+        
+    // }
+    // else{
+    //     res.send("the authentication failed")
+    //     next()
+    // }
+
+}
+
+
 
 const commentRouter =Router()
 
 
-commentRouter.post("/news/comment",async(req:Request,res:Response)=>{
+commentRouter.post("/news/comment",verifyJwt,async(req:Request,res:Response)=>{
     console.log(req.body)
    const data ={newsId :1,comment:req.body.comment}
     try {
@@ -19,7 +49,7 @@ commentRouter.post("/news/comment",async(req:Request,res:Response)=>{
 
         
         res.status(200).json({msg:"Comment added successfully"})
-        console.log(inserted)
+       // console.log(inserted)
 
 
     }
@@ -29,7 +59,7 @@ commentRouter.post("/news/comment",async(req:Request,res:Response)=>{
 
     }
 })
-commentRouter.post("/news/comments", async (req:Request,res:Response)=>{
+commentRouter.post("/news/comments",verifyJwt, async (req:Request,res:Response)=>{
     console.log(req.body)
 
     const commentsRepository=  appDataSource.getRepository(Comments)

@@ -11,7 +11,7 @@ export const appDataSource = new DataSource ( {
     database:"News",
     username:"root",
     password:"",
-    logging:true,
+    logging:false,
     synchronize: true,
     entities:[News,Likes,Comments,User]
 

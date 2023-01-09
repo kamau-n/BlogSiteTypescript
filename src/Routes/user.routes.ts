@@ -5,59 +5,101 @@ import { Likes } from "../entity/Likes";
 import { News } from "../entity/News";
 import bcrypt = require("bcrypt");
 import { User } from "../entity/User";
+import jwt, { Secret } from "jsonwebtoken"
+import { getCookie, setCookie } from "typescript-cookie";
+//import extractJWT from "../middleware/jwtVerify";
 
 
+const secret: Secret = "i have a secret";
 
-const userRouter=Router()
-const userRepository=appDataSource.getRepository(User)
+const userRouter = Router()
+const userRepository = appDataSource.getRepository(User)
 
-userRouter.post("/user",async(req,res)=>{
+userRouter.get("/user",async(req,res)=>{
+    try
+    {
 
-    const hashed = await bcrypt.hash(req.body.password,10)
+     const users = await  userRepository.find()
+     res.send(users)
 
-    const data={username:req.body.name,email:req.body.email,address:req.body.address,password:hashed}
+    }
+    catch(err){
+        res.json({msg:"users were not found"})
 
-    console.log(data)
-
-    const exists =await userRepository.findOneBy({
-        
-            email:req.body.email
-        }
-    )
-
-
-if(!exists){
-    const newUser = await appDataSource.createQueryBuilder()
-    .insert()
-    .into(User)
-    .values(data)
-    .execute()
-
-
-
-    console.log(newUser)
-    res.status(200).json({msg:"user has been created successfully"})
-}
-else {
-    res.json({msg:"user already exists"})
-}
-
-
-
-    
+    }
 
 })
 
-userRouter.post("/login",async(req:Request,res:Response)=>{
-    const exists=await userRepository.findOneBy({
-        email:req.body.email
+userRouter.post("/user", async (req, res) => {
 
-    })
-    if(exists){
-        res.send(exists)
+    const hashed = await bcrypt.hash(req.body.password, 10)
+
+
+    const data = { username: req.body.name, email: req.body.email, address: req.body.address, password: hashed }
+
+    console.log(data)
+
+    const exists = await userRepository.findOneBy({
+
+        email: req.body.email
+    }
+    )
+
+
+    if (!exists) {
+        const newUser = await appDataSource.createQueryBuilder()
+            .insert()
+            .into(User)
+            .values(data)
+            .execute()
+
+
+
+        console.log(newUser)
+        res.status(200).json({ msg: "user has been created successfully" })
     }
     else {
-        res.send("Does not exist")
+        res.json({ msg: "user already exists" })
+    }
+
+
+
+
+
+})
+
+userRouter.post("/login", async (req: Request, res: Response) => {
+    const exists = await userRepository.findOneBy({
+        email: req.body.email
+
+    })
+    if (exists) {
+        const verified = await bcrypt.compare(exists.password, req.body.password)
+
+
+        const AcessToken = jwt.sign({ name: exists.username, id: exists.id }, secret, { expiresIn: 1000 * 60 * 60 })
+     
+
+        const refreshToken= jwt.sign({ name: exists.username, id: exists.id }, secret,)
+
+         //setCookie('accessToken',AcessToken)
+
+        // setCookie('refreshToken',refreshToken)
+
+        res.json({logged:true})
+        // if (verified) {
+           
+
+
+        // }
+        // else {
+        //     res.json({ msg: "incorrect password" })
+        // }
+
+
+    }
+    else {
+        res.json({ msg: "user does not exist",logged:false })
     }
 
 })

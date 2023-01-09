@@ -7,14 +7,14 @@ import commentRouter from "./Routes/comments.routes";
 import userRouter from "./Routes/user.routes";
 
 
-// const corsOptions = {
-//     origin: ["http://localhost:3000"],
-//     methods: ["GET", "POST","DELETE"],
-//     credentials: true
-//   }
+const corsOptions = {
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST","DELETE"],
+    credentials: true
+  }
 
 const app =express();
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({extended:true}));
@@ -23,6 +23,8 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use("/",newRouter)
 app.use("/",commentRouter)
 app.use("/",userRouter)
+
+console.log("we are trying to connect")
 
 appDataSource.initialize()
 .then(()=>console.log("the connection has been established"))

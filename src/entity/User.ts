@@ -17,6 +17,9 @@ export class User {
     @Column()
     address!:string
 
+    @Column()
+    password!:string
+
    @CreateDateColumn({type:"datetime"})
    createdAt!:Date;
   
