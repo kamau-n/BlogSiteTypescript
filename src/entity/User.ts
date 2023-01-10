@@ -1,6 +1,7 @@
 import { type, userInfo } from "os";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 import { Comments } from "./Comment";
+import { Likes } from "./Likes";
 
 @Entity()
 export class User {
@@ -25,5 +26,8 @@ export class User {
   
    @OneToMany(()=>Comments,(comments)=>comments.user)
    comments!:Comments[]
+
+   @OneToMany(()=>Likes,(likes)=>likes.user)
+   likes!:Likes[]
 
 }

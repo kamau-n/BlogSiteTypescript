@@ -23,7 +23,8 @@ export class Comments{
      @Column()
      userId!:number;
 
- 
+     @CreateDateColumn()
+     created_at!:Date;
     
 
 

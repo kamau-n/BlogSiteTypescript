@@ -78,7 +78,7 @@ newRouter.post('/news/like',async(req:Request,res:Response)=>{
         .values(req.body)
         .execute()
 
-        res.status(200).json({msg:"news post liked successfully"})
+        res.json({msg:"news post liked successfully"})
         console.log(likes)
 
 
@@ -87,6 +87,34 @@ newRouter.post('/news/like',async(req:Request,res:Response)=>{
         console.log(e)
         res.json({msg:"unable to like the post"})
     }
+
+})
+
+newRouter.post("/news/likes",async(req:Request,res:Response)=>{
+    console.log("route has been accessed")
+    const newsLikes= appDataSource.getRepository(Likes)
+
+ 
+
+    try {
+        const likes =await 
+        newsLikes
+        .createQueryBuilder()
+        .addSelect('COUNT(*)','likes')
+        .where("Likes.newsId=:id",{id:req.body.newsId})
+        .getRawOne()
+      
+      
+     
+         res.send(likes.likes)
+         console.log(likes.likes)
+     
+         }
+         catch(err) {
+             res.send(err)
+         }
+     
+
 
 })
 
