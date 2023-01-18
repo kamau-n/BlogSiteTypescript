@@ -36,7 +36,7 @@ const commentRouter =Router()
 
 
 commentRouter.post("/news/comment",verifyJwt,async(req:Request,res:Response)=>{
-    console.log(req.body)
+ 
    const data ={newsId :1,comment:req.body.comment}
     try {
 
@@ -48,7 +48,7 @@ commentRouter.post("/news/comment",verifyJwt,async(req:Request,res:Response)=>{
      
 
         
-        res.status(200).json({msg:"Comment added successfully"})
+        res.status(200).json({msg:"Comment added successfully",added:true})
        // console.log(inserted)
 
 

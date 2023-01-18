@@ -10,6 +10,7 @@ const verifyJwt =(req:Request,res:Response,next:NextFunction)=>{
      const decoded=   jwt.verify(token,secret)
      res.send(token)
      next()
+     
         
         
     }
