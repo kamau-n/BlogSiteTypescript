@@ -1,11 +1,12 @@
-import  { BaseEntity, Column, Entity,PrimaryGeneratedColumn,OneToMany, CreateDateColumn} from 'typeorm'
+import  { BaseEntity, Column, Entity,PrimaryGeneratedColumn,OneToMany, CreateDateColumn, ManyToOne} from 'typeorm'
 import { Comments } from './Comment';
 import { Likes } from './Likes';
 import { type } from 'os';
 import { text } from 'express';
+import { User } from './User';
 
 @Entity() 
-export class News   {
+export class Blog   {
     @PrimaryGeneratedColumn()
     id!:number;
 
@@ -22,12 +23,18 @@ export class News   {
     @Column()
     topic!:string;
 
+    @Column()
+    userId!:string;
 
-    @OneToMany(()=>Likes,(likes)=>likes.news )
+
+    @ManyToOne(()=>User,(user)=>user.blogs)
+    users!:User;
+
+    @OneToMany(()=>Likes,(likes)=>likes.blogs )
     likes!:Likes[]
     
 
-    @OneToMany(()=>Comments,(comments)=>comments.news)
+    @OneToMany(()=>Comments,(comments)=>comments.blogs)
     comments!:Comments[]
 
    

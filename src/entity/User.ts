@@ -2,6 +2,7 @@ import { type, userInfo } from "os";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 import { Comments } from "./Comment";
 import { Likes } from "./Likes";
+import { Blog } from "./Blog";
 
 @Entity()
 export class User {
@@ -24,6 +25,10 @@ export class User {
    @CreateDateColumn({type:"datetime"})
    createdAt!:Date;
   
+   @OneToMany(()=>Blog,(blogs)=>blogs.users)
+   blogs!:Blog[]
+
+
    @OneToMany(()=>Comments,(comments)=>comments.user)
    comments!:Comments[]
 

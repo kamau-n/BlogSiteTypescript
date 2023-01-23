@@ -2,40 +2,64 @@ import { Request, Response, Router } from "express";
 import { getRepository } from "typeorm";
 import { appDataSource } from "../configuration/connection";
 import { Likes } from "../entity/Likes";
-import { News } from "../entity/News";
+import { Blog } from "../entity/Blog";
 
 const newRouter = Router();
 
-newRouter.post("/news", async (req: Request, res: Response) => {
-  console.log("create route has been accessed");
-  console.log(req.body);
+
+// creating a new blog article
+newRouter.post("/blogs", async (req: Request, res: Response) => {
+   console.log("create route has been accessed");
+  // console.log(req.body);
 
   try {
     const news = await appDataSource
       .createQueryBuilder()
       .insert()
-      .into(News)
+      .into(Blog)
       .values(req.body)
       .execute();
 
-    res.json({ message: "news successfully added" });
+    res.json({ message: "news successfully added",created:true });
   } catch (error) {
     console.log("there was an error" + error);
 
-    res.send(error);
+    res.status(200).json({created:false,msg:"Unable to create the news Article"});
   }
 });
 
-newRouter.get("/news/:id", async (req, res) => {
+
+//  Getting all the blog articles
+newRouter.get("/blogs", async (req: Request, res: Response) => {
+  const news = appDataSource.getRepository(Blog);
+  try {
+
+
+    const data = await appDataSource
+      .createQueryBuilder()
+      .select("blog")
+      .from(Blog, "blog")
+   
+      .getMany()
+    res.status(200).json(data);
+    console.log(data)
+  } catch (e) {
+    res.send("there was an error in retrieving the news");
+    console.log(e)
+  }
+});
+
+
+newRouter.get("/blog/:id", async (req, res) => {
   console.log(req.params.id);
 
-  const newsRepository = appDataSource.getRepository(News);
+  const newsRepository = appDataSource.getRepository(Blog);
 
   try {
     const article = await appDataSource
       .createQueryBuilder()
       .select()
-      .from(News, "article")
+      .from(Blog, "article")
       .where("id=:news_id", { news_id: req.params.id })
       .execute();
 
@@ -45,43 +69,62 @@ newRouter.get("/news/:id", async (req, res) => {
   }
 });
 newRouter.delete("/news", async (req: Request, res: Response) => {
-  const news = appDataSource.getRepository(News);
+  const blogs = appDataSource.getRepository(Blog);
   try {
-    await news.delete(1);
+    await blogs.delete(1);
     res.send("deleted");
   } catch (e) {
     res.send("unable to delete");
   }
 });
 
-newRouter.get("/news", async (req: Request, res: Response) => {
-  const news = appDataSource.getRepository(News);
+
+
+
+// getting the new article by topic 
+newRouter.post("/news/topic",async(req,res)=>{
+  console.log(req.body)
+  const topic =req.body.topic;
+
+  const news = appDataSource.getRepository(Blog);
   try {
-    //     const data =await news.find({
-    //      relations:{
-    // likes:true
-
-    //            },
-               
-
-    //   })
-
-    //   res.send(data)
-
-
 
     const data = await appDataSource
       .createQueryBuilder()
-      .select("news")
-      .from(News, "news")
-      .getMany();
-    res.status(200).json(data);
+      .select()
+      .from(Blog, "blogs")
+      .where("topic=:topic", { topic: topic })
+
+      .execute();
+
+
+      if(data.length ==0) {
+        res.status(200).json({Available:false})
+      }
+      else {
+
+      
+    
+    res.status(200).json({available:true ,data});
     console.log(data)
+      }
   } catch (e) {
     res.send("there was an error in retrieving the news");
   }
 });
 
+  
+
+
+
+
+
+ 
+  //this is a route for liking a news article
+
+
+
+ 
 newRouter.post("/news/like", async (req: Request, res: Response) => {
   console.log(req.body);
   try {
@@ -100,13 +143,13 @@ newRouter.post("/news/like", async (req: Request, res: Response) => {
 
 newRouter.post("/news/likes", async (req: Request, res: Response) => {
   console.log("route has been accessed");
-  const newsLikes = appDataSource.getRepository(Likes);
+  const blogLikes = appDataSource.getRepository(Likes);
 
   try {
-    const likes = await newsLikes
+    const likes = await blogLikes
       .createQueryBuilder()
       .addSelect("COUNT(*)", "likes")
-      .where("Likes.newsId=:id", { id: req.body.newsId })
+      .where("Likes.blogId=:id", { id: req.body.blogId })
       .getRawOne();
 
     res.send(likes.likes);

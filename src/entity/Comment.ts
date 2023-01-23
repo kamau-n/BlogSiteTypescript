@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { News } from "./News";
+import { Blog } from "./Blog";
 import { User } from "./User";
 import { Col } from "sequelize/types/utils";
 
@@ -28,8 +28,8 @@ export class Comments{
     
 
 
-    @ManyToOne(()=>News , (news)=>news.comments,{onDelete:"CASCADE"})
-    news!:News
+    @ManyToOne(()=>Blog , (blogs)=>blogs.comments,{onDelete:"CASCADE"})
+    blogs!:Blog
 
 
     @ManyToOne(()=> User , (user)=>user.comments,{onDelete:'CASCADE'})

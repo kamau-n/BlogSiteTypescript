@@ -2,10 +2,11 @@ import bodyParser from "body-parser";
 import  express, { response }  from "express";
 import { Response}  from "express";
 import {appDataSource }from "./configuration/connection";
-import newRouter from "./Routes/news.routes";
+import newRouter from "./Routes/blogs.routes";
 import cors from "cors"
 import commentRouter from "./Routes/comments.routes";
 import userRouter from "./Routes/user.routes";
+import expressSession from "./middleware/expressSession"
 
 
 const corsOptions = {
@@ -20,7 +21,7 @@ app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({extended:true}));
 
-
+app.use(expressSession)
 app.use("/",newRouter)
 app.use("/",commentRouter)
 app.use("/",userRouter)

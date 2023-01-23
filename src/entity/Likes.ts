@@ -1,5 +1,5 @@
 import  { Column, Entity,PrimaryGeneratedColumn,ManyToOne, JoinColumn, JoinTable, CreateDateColumn} from 'typeorm'
-import { News } from './News';
+import { Blog } from './Blog';
 import { User } from "./User";
 
 @Entity() 
@@ -17,8 +17,8 @@ export class Likes   {
   created_at!:Date;
  
 
-    @ManyToOne(()=> News,(news)=>news.likes ,{cascade:true})
-    news!:News
+    @ManyToOne(()=> Blog,(blogs)=>blogs.likes ,{cascade:true})
+    blogs!:Blog
    
 
     @ManyToOne(()=> User , (user)=>user.comments,{onDelete:'CASCADE'})

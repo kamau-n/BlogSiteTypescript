@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { Comments } from "../entity/Comment";
 import { Likes } from "../entity/Likes";
-import { News } from "../entity/News";
+import { Blog } from "../entity/Blog";
 import { User } from "../entity/User";
 
 
@@ -13,7 +13,7 @@ export const appDataSource = new DataSource ( {
     password:"",
     logging:false,
     synchronize: true,
-    entities:[News,Likes,Comments,User]
+    entities:[Blog,Likes,Comments,User]
 
 
 
