@@ -5,35 +5,10 @@ import jwt, { Secret } from "jsonwebtoken";
 import { getCookie, setCookie } from 'typescript-cookie'
 
 import sessionMiddleware from "../middleware/expressSession";
+import verifyJwt from "../middleware/jwtVerify";
+import { User } from "../entity/User";
 
 
-
-const secret:Secret="i have a secret";
-//const accessToken:string=''
-
-// const verifyJwt =(req:Request,res:Response,next:NextFunction)=>{
-
-//     //console.log("middleware has been accessed")
-//     //console.log(getCookie('acessToken'));
-//     // let token =req.headers.authorization?.split(' ')[1];
-
-//     const { acessToken} =req.cookies;
-//     console.log(acessToken)
-   
-// //    const token =res.cookie.accessToken || res.cookie.refreshToken;
-// //     if(token) {
-// //      const decoded=   jwt.verify(token,secret)
-// //      next()
-        
-        
-// //     }
-// //     else{
-// //         res.status(401).json({msg:"the authentication failed"})
-// //         next()
-// //     }
-
-// next()
-// }
 
 
 
@@ -61,7 +36,7 @@ commentRouter.post("/blog/comment",async(req:Request,res:Response)=>{
 
     }
 })
-commentRouter.post("/news/comments", async (req:Request,res:Response)=>{
+commentRouter.post("/blog/comments", async (req:Request,res:Response)=>{
     console.log(req.body)
 
     const commentsRepository=  appDataSource.getRepository(Comments)
@@ -69,15 +44,20 @@ commentRouter.post("/news/comments", async (req:Request,res:Response)=>{
    const comments =await commentsRepository.find(
         {
             relations:{
+                
                 blogs:true,
                 user:true
             },
-            where :{
-                blogs:{
-                    id:req.body.id
-                }
-            }
+            where : {
+            blogs: {
+                      id:req.body.blogsId
+            
+            
         }
+
+    
+    }
+}
     )
 
     res.send(comments)

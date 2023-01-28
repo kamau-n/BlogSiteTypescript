@@ -8,8 +8,9 @@ import { User } from "../entity/User";
 import jwt, { Secret } from "jsonwebtoken"
 import { getCookie, setCookie,Cookies } from "typescript-cookie";
 import session from "express-session"
+const LocalStorage = require('node-localstorage').LocalStorage;
 //import extractJWT from "../middleware/jwtVerify";
-
+const localStorage = new LocalStorage('./scratch');
 
 const secret: Secret = "i have a secret";
 
@@ -85,15 +86,11 @@ userRouter.post("/login", async (req: Request, res: Response) => {
                 id:exists.id,
                 name:exists.username,
                 email:exists.email
-            },secret,)
+            },secret,{expiresIn:'60000'})
 
-            localStorage.setItem("acessToken",JSON.parse(accessToken))
-      
-    console.log(accessToken)
-     
-            res.json({msg:"verification complete",login:true})
+            res.status(201).cookie("authToken",accessToken,{maxAge:300000}).json({msg:"verification complete",login:true})
 
-
+console.log(req.cookies)
         }
         else {
             res.json({ msg: "incorrect password",login:false })

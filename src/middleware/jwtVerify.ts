@@ -7,7 +7,7 @@ const secret:Secret="i have a secret";
 const verifyJwt =(req:Request,res:Response,next:NextFunction)=>{
     //let token =req.headers.authorization?.split(' ')[1];
 
-    const  token =localStorage.getItem("acessToken") || localStorage.getItem("refreshToken")
+    
     if(token) {
      const decoded=   jwt.verify(token,secret)
      res.send(token)
@@ -22,3 +22,6 @@ const verifyJwt =(req:Request,res:Response,next:NextFunction)=>{
     }
 
 }
+
+
+export default verifyJwt;

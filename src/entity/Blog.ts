@@ -28,7 +28,7 @@ export class Blog   {
 
 
     @ManyToOne(()=>User,(user)=>user.blogs)
-    users!:User;
+    user!:User;
 
     @OneToMany(()=>Likes,(likes)=>likes.blogs )
     likes!:Likes[]

@@ -7,6 +7,7 @@ import cors from "cors"
 import commentRouter from "./Routes/comments.routes";
 import userRouter from "./Routes/user.routes";
 import expressSession from "./middleware/expressSession"
+import {JSONCookie} from "cookie-parser"
 
 
 const corsOptions = {
@@ -21,20 +22,20 @@ app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({extended:true}));
 
-app.use(expressSession)
+// app.use(expressSession)
 app.use("/",newRouter)
 app.use("/",commentRouter)
 app.use("/",userRouter)
 
-console.log("we are trying to connect")
+
 
 try {
 
 appDataSource.initialize()
 .then(()=> {console.log("the connection has been established")})
 .catch((err,)=>{
-  console.log("there was a problem in the connection" )
-  response.json({mg:"unable to connect to server"})
+  console.log("there was a problem in the connection" + err)
+ // response.json({mg:"unable to connect to server"})
  })
 
 }

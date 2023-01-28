@@ -8,7 +8,7 @@ export class Likes   {
     id!:number;
 
   @Column()
-  newsId!:number;
+  blogsId!:number;
 
   @Column()
   userId!:number;

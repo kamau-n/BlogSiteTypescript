@@ -25,7 +25,7 @@ export class User {
    @CreateDateColumn({type:"datetime"})
    createdAt!:Date;
   
-   @OneToMany(()=>Blog,(blogs)=>blogs.users)
+   @OneToMany(()=>Blog,(blogs)=>blogs.user)
    blogs!:Blog[]
 
 

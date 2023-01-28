@@ -3,6 +3,7 @@ import { getRepository } from "typeorm";
 import { appDataSource } from "../configuration/connection";
 import { Likes } from "../entity/Likes";
 import { Blog } from "../entity/Blog";
+import verifyJwt from "../middleware/jwtVerify";
 
 const newRouter = Router();
 
@@ -30,19 +31,26 @@ newRouter.post("/blogs", async (req: Request, res: Response) => {
 
 
 //  Getting all the blog articles
+
+
 newRouter.get("/blogs", async (req: Request, res: Response) => {
-  const news = appDataSource.getRepository(Blog);
+  const blogsRepository = appDataSource.getRepository(Blog);
   try {
+   const blogs = await blogsRepository.find({
+      relations:{
+        user:true,
+        likes:true
+      }
+    })
 
 
-    const data = await appDataSource
-      .createQueryBuilder()
-      .select("blog")
-      .from(Blog, "blog")
-   
-      .getMany()
-    res.status(200).json(data);
-    console.log(data)
+    // const data = await appDataSource
+    //   .createQueryBuilder()
+    //   .select("blog")
+    //   .from(Blog, "blog")
+    //   .getMany()
+    res.status(200).json(blogs);
+    console.log(blogs)
   } catch (e) {
     res.send("there was an error in retrieving the news");
     console.log(e)
@@ -68,7 +76,12 @@ newRouter.get("/blog/:id", async (req, res) => {
     res.json({ msg: "there was an error in the retrival of the information" });
   }
 });
-newRouter.delete("/news", async (req: Request, res: Response) => {
+
+
+
+//delete a  blog
+
+newRouter.delete("/blog", async (req: Request, res: Response) => {
   const blogs = appDataSource.getRepository(Blog);
   try {
     await blogs.delete(1);
@@ -82,7 +95,9 @@ newRouter.delete("/news", async (req: Request, res: Response) => {
 
 
 // getting the new article by topic 
-newRouter.post("/news/topic",async(req,res)=>{
+
+
+newRouter.post("/blog/topic",async(req,res)=>{
   console.log(req.body)
   const topic =req.body.topic;
 
@@ -125,7 +140,7 @@ newRouter.post("/news/topic",async(req,res)=>{
 
 
  
-newRouter.post("/news/like", async (req: Request, res: Response) => {
+newRouter.post("/blog/like", async (req: Request, res: Response) => {
   console.log(req.body);
   try {
     const likes = await appDataSource
@@ -135,13 +150,42 @@ newRouter.post("/news/like", async (req: Request, res: Response) => {
       .values(req.body)
       .execute();
 
-    res.json({ msg: "news post liked successfully" });
+  
+
+//   const blogsRepository=  appDataSource.getRepository(Blog)
+//   try {
+//  const blogs =await blogsRepository.find(
+//       {
+//           relations:{
+            
+//               users:true
+//           }
+        
+//       }
+  
+
+  res.status(200).json({msg:"blog was liked successfully"})
+
   } catch (e) {
+    console.log(e)
     res.json({ msg: "unable to like the post" });
   }
 });
 
-newRouter.post("/news/likes", async (req: Request, res: Response) => {
+
+/*
+
+
+
+
+
+*/
+
+
+
+
+
+newRouter.post("/blog/likes", async (req: Request, res: Response) => {
   console.log("route has been accessed");
   const blogLikes = appDataSource.getRepository(Likes);
 
@@ -149,7 +193,7 @@ newRouter.post("/news/likes", async (req: Request, res: Response) => {
     const likes = await blogLikes
       .createQueryBuilder()
       .addSelect("COUNT(*)", "likes")
-      .where("Likes.blogId=:id", { id: req.body.blogId })
+      .where("Likes.blogsId=:id", { id: req.body.blogsId })
       .getRawOne();
 
     res.send(likes.likes);
