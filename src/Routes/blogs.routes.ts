@@ -50,7 +50,7 @@ newRouter.get("/blogs", async (req: Request, res: Response) => {
     //   .from(Blog, "blog")
     //   .getMany()
     res.status(200).json(blogs);
-    console.log(blogs)
+    //console.log(blogs)
   } catch (e) {
     res.send("there was an error in retrieving the news");
     console.log(e)

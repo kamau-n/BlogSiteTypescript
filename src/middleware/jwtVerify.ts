@@ -5,7 +5,7 @@ import jwt, { Secret } from "jsonwebtoken"
 const secret:Secret="i have a secret";
 
 const verifyJwt =(req:Request,res:Response,next:NextFunction)=>{
-    //let token =req.headers.authorization?.split(' ')[1];
+    let token =req.headers.authorization?.split(' ')[1];
 
     
     if(token) {

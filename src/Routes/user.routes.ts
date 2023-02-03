@@ -31,6 +31,9 @@ userRouter.get("/user", async (req, res) => {
 
 })
 
+
+//this is a route for creating a user
+
 userRouter.post("/user", async (req, res) => {
 
     const hashed = await bcrypt.hash(req.body.password, 10)
@@ -61,7 +64,7 @@ userRouter.post("/user", async (req, res) => {
         console.log("user has been created successfully")
     }
     else {
-        res.json({ msg: "user already exists" })
+        res.status(200).json({ msg: "user already exists" })
         console.log("a user with that email already exist")
     }
 
@@ -70,6 +73,10 @@ userRouter.post("/user", async (req, res) => {
 
 
 })
+
+
+// this is the login route
+
 
 userRouter.post("/login", async (req: Request, res: Response) => {
 
@@ -86,11 +93,11 @@ userRouter.post("/login", async (req: Request, res: Response) => {
                 id:exists.id,
                 name:exists.username,
                 email:exists.email
-            },secret,{expiresIn:'60000'})
+            },secret,{expiresIn:'600000'})
 
-            res.status(201).cookie("authToken",accessToken,{maxAge:300000}).json({msg:"verification complete",login:true})
+            res.status(201).cookie("authToken",accessToken,{maxAge:3000000}).json({msg:"verification complete",login:true})
 
-console.log(req.cookies)
+console.log(res.cookie)
         }
         else {
             res.json({ msg: "incorrect password",login:false })
