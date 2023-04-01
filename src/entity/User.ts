@@ -22,6 +22,12 @@ export class User {
     @Column()
     password!:string
 
+    @Column({ type:"boolean",default:false})
+    verified!:boolean
+    
+
+
+
    @CreateDateColumn({type:"datetime"})
    createdAt!:Date;
   

@@ -13,6 +13,11 @@ newRouter.post("/blogs", async (req: Request, res: Response) => {
    console.log("create route has been accessed");
   // console.log(req.body);
 
+
+
+
+ 
+
   try {
     const news = await appDataSource
       .createQueryBuilder()
@@ -27,14 +32,21 @@ newRouter.post("/blogs", async (req: Request, res: Response) => {
 
     res.status(200).json({created:false,msg:"Unable to create the news Article"});
   }
-});
+
+
+})
+
+
 
 
 //  Getting all the blog articles
 
 
 newRouter.get("/blogs", async (req: Request, res: Response) => {
+
+
   const blogsRepository = appDataSource.getRepository(Blog);
+  console.log("the blogs route has been accessed")
   try {
    const blogs = await blogsRepository.find({
       relations:{
@@ -50,11 +62,12 @@ newRouter.get("/blogs", async (req: Request, res: Response) => {
     //   .from(Blog, "blog")
     //   .getMany()
     res.status(200).json(blogs);
-    //console.log(blogs)
+    console.log(blogs)
   } catch (e) {
     res.send("there was an error in retrieving the news");
     console.log(e)
   }
+
 });
 
 
