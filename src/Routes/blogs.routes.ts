@@ -11,7 +11,7 @@ const newRouter = Router();
 // creating a new blog article
 newRouter.post("/blogs", async (req: Request, res: Response) => {
    console.log("create route has been accessed");
-  // console.log(req.body);
+   console.log(req.body);
 
 
 
@@ -53,6 +53,7 @@ newRouter.get("/blogs", async (req: Request, res: Response) => {
         user:true,
         likes:true
       }
+      
     })
 
 
@@ -115,27 +116,26 @@ newRouter.post("/blog/topic",async(req,res)=>{
   const topic =req.body.topic;
 
   const news = appDataSource.getRepository(Blog);
+
   try {
-
-    const data = await appDataSource
-      .createQueryBuilder()
-      .select()
-      .from(Blog, "blogs")
-      .where("topic=:topic", { topic: topic })
-
-      .execute();
-
-
-      if(data.length ==0) {
-        res.status(200).json({Available:false})
-      }
-      else {
-
-      
+    const blogs = await news.find(
     
-    res.status(200).json({available:true ,data});
-    console.log(data)
+      {
+        
+        where:{
+          topic:topic
+        }
+        ,relations:{
+          user:true
+        }
+        
       }
+      )
+
+    
+    res.status(200).json({available:true ,blogs});
+    console.log(blogs)
+      // }
   } catch (e) {
     res.send("there was an error in retrieving the news");
   }
