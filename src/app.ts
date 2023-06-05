@@ -6,8 +6,9 @@ import newRouter from "./Routes/blogs.routes";
 import cors from "cors"
 import commentRouter from "./Routes/comments.routes";
 import userRouter from "./Routes/user.routes";
-import expressSession from "./middleware/expressSession"
-import {JSONCookie} from "cookie-parser"
+import mailRouter from "./Routes/mailer.routes"
+import activateRouter from "./Routes/activator.routes";
+
 
 
 const corsOptions = {
@@ -23,8 +24,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}));
 
 // app.use(expressSession)
-app.use("/",newRouter)
-app.use("/",commentRouter)
+app.use("/",newRouter,mailRouter)
+app.use("/",commentRouter,activateRouter)
 app.use("/",userRouter)
 
 

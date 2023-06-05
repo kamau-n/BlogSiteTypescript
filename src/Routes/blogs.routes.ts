@@ -1,37 +1,86 @@
-import { Request, Response, Router } from "express";
+import {  Request, Response, Router } from "express";
 import { getRepository } from "typeorm";
 import { appDataSource } from "../configuration/connection";
 import { Likes } from "../entity/Likes";
 import { Blog } from "../entity/Blog";
-import verifyJwt from "../middleware/jwtVerify";
+
+//import multerUpload  from "../middleware/multerUpload";
+import multer from "multer";
+
+
+
+
 
 const newRouter = Router();
+
+const storage = multer.diskStorage({
+
+  destination: function (req:Request, file, cb) {
+
+    cb(null, "/harry/Developer/Projects/news_app/src/uploads");
+    console.log("i have been accessed")
+  },
+  filename: function (req:Request, file, cb) {
+    
+    cb(null,  file.originalname);
+    console.log(file)
+
+    let _new_name = Date.now() + "-" + file.originalname
+    return _new_name;
+    
+    //req.file_name= Date.now() + "-" + file.originalname
+  },
+});
+
+
+
 
 
 // creating a new blog article
-newRouter.post("/blogs", async (req: Request, res: Response) => {
+newRouter.post("/blogs", (req:Request , res: Response) => {
+  
    console.log("create route has been accessed");
-   console.log(req.body);
+   console.log(req.body)
 
 
-
-
- 
-
-  try {
-    const news = await appDataSource
+   let upload = multer({storage:storage}).single("image");
+   upload(req,res,(err)=>{
+    if(err) {
+      res.json({message:"unable to upload an image",created:false})
+    }
+    else {
+    
+    const news =  appDataSource
       .createQueryBuilder()
       .insert()
       .into(Blog)
       .values(req.body)
       .execute();
 
-    res.json({ message: "news successfully added",created:true });
-  } catch (error) {
-    console.log("there was an error" + error);
+      news.then((res_message)=>{
+        console.log(res_message)
+        
+        res.json({ message: "blog successfully added",created:true });
+        console.log("blog created successfully")
 
-    res.status(200).json({created:false,msg:"Unable to create the news Article"});
-  }
+      })
+      .catch((err)=>{
+        console.log("there was an error" + err)
+
+        res.status(200).json({created:false,msg:"Unable to create the news Article"});
+      
+
+      })
+  
+    }
+ 
+  
+
+    
+    })
+  
+
+
 
 
 })
@@ -45,6 +94,7 @@ newRouter.post("/blogs", async (req: Request, res: Response) => {
 newRouter.get("/blogs", async (req: Request, res: Response) => {
 
 
+  
   const blogsRepository = appDataSource.getRepository(Blog);
   console.log("the blogs route has been accessed")
   try {
@@ -63,7 +113,7 @@ newRouter.get("/blogs", async (req: Request, res: Response) => {
     //   .from(Blog, "blog")
     //   .getMany()
     res.status(200).json(blogs);
-    console.log(blogs)
+    //console.log(blogs)
   } catch (e) {
     res.send("there was an error in retrieving the news");
     console.log(e)
@@ -95,13 +145,14 @@ newRouter.get("/blog/:id", async (req, res) => {
 
 //delete a  blog
 
-newRouter.delete("/blog", async (req: Request, res: Response) => {
+newRouter.get("/blog/delete/:id", async (req: Request, res: Response) => {
+  console.log(req.params.id)
   const blogs = appDataSource.getRepository(Blog);
   try {
-    await blogs.delete(1);
-    res.send("deleted");
+    await blogs.delete(req.params.id);
+    res.json({msg:"Blog deleted Successfully",deleted:true});
   } catch (e) {
-    res.send("unable to delete");
+    res.json({msg:"unable to delete the blog" ,deleted:false})
   }
 });
 
@@ -188,11 +239,31 @@ newRouter.post("/blog/like", async (req: Request, res: Response) => {
 
 /*
 
+getting blogs by user id
+
 
 
 
 
 */
+newRouter.get("/blogs/user/:id",async(req:Request,res:Response)=>{
+
+  const newsRepository = appDataSource.getRepository(Blog);
+
+  try {
+    const article = await appDataSource
+      .createQueryBuilder()
+      .select()
+      .from(Blog, "article")
+      .where("userId=:user_id", { user_id: req.params.id })
+      .execute();
+
+    res.send(article);
+  } catch (err) {
+    res.json({ msg: "there was an error in the retrival of the information" });
+  }
+
+})
 
 
 

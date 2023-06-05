@@ -21,6 +21,9 @@ export class Blog   {
     
 
     @Column()
+    image!:string;
+
+    @Column()
     topic!:string;
 
     @Column()

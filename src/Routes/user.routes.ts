@@ -10,6 +10,7 @@ import { getCookie, setCookie, Cookies } from "typescript-cookie";
 import session from "express-session"
 import { error } from "console";
 const LocalStorage = require('node-localstorage').LocalStorage;
+
 //import extractJWT from "../middleware/jwtVerify";
 const localStorage = new LocalStorage('./scratch');
 
@@ -38,11 +39,12 @@ userRouter.get("/user", async (req, res) => {
 userRouter.post("/user", async (req, res) => {
 
     console.log(req.body)
+    try{
 
     const hashed = await bcrypt.hash(req.body.password, 10)
 
 
-    const data = { username: req.body.username, email: req.body.email, address: req.body.address, password: hashed }
+    const data = { username: req.body.username, verified:false,email: req.body.email, address: req.body.address, password: hashed }
 
     // console.log(data, req.body)
 
@@ -60,10 +62,8 @@ userRouter.post("/user", async (req, res) => {
             .values(data)
             .execute()
 
-
-
         // console.log(newUser)
-        res.status(200).json({ msg: "user has been created successfully" })
+        res.status(200).json({ msg: "user has been created successfully",created:true })
         console.log("user has been created successfully")
     }
     else {
@@ -72,18 +72,34 @@ userRouter.post("/user", async (req, res) => {
     }
 
 
-
+}
+catch(err){
+    console.log(err)
+    res.status(200).json({ msg: "unable to create a user", created:false})
+}
 
 
 })
 
 
 // this is the login route
+type Users ={
+    name:string;
+    id:string;
+    email:string;
+
+
+}
+
+  export interface  new_session_variables extends session.Session {
+    user: Users
+  }
 
 
 userRouter.post("/login", async (req: Request, res: Response) => {
 
     console.log(req.body)
+    try {
     const exists = await userRepository.findOneBy({
         email: req.body.email
 
@@ -92,13 +108,19 @@ userRouter.post("/login", async (req: Request, res: Response) => {
         const verified = await bcrypt.compare(req.body.password, exists.password)
 
         if (verified) {
+
+            
+            
+             
             const accessToken = jwt.sign({
                 id: exists.id,
                 name: exists.username,
+                address:exists.address,
                 email: exists.email
             }, secret, { expiresIn: '1h' })
 
-            res.status(201).json({ msg: "verification complete", login: true,token:accessToken })
+            res.status(201).json({ msg: "verification complete", login: true ,token:accessToken})
+           // res.cookie("accessToken",accessToken,{maxAge:1000*60*60,httpOnly:true})
 
         }
         else {
@@ -112,18 +134,28 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     else {
         res.json({ msg: "user does not exist", login: false })
     }
+}
+catch(err){
+    console.log(err)
+    //res.json({ msg: "unable to login", login: false })
+
+}
 
 })
 
 userRouter.post("/token_authenticate",async(req,res)=>{
-   // console.log(req.body.token)
+   console.log(req.body)
     try{
     try {
         const decoded = jwt.verify(req.body.token, secret)
+        console.log("user has been authenticated successfully")
+        console.log( decoded)
         res.status(200).json({msg:"authenticated sucessfully",user:decoded ,authenticated:true})
         
     } catch (error) {
-        res.status(403).json({msg:"unable to authenticated",authenticated:false})
+        res.status(200).json({msg:"unable to authenticated",authenticated:false})
+        console.log(error)
+        console.log("unable to authenticate")
         
     }
       
